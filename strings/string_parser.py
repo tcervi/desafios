@@ -1,13 +1,12 @@
-
-text_sample = \
-    r'In the beginning God created the heavens and the earth. Now the earth was formless and empty, darkness was over' \
-    r' the surface of the deep, and the Spirit of God was hovering over the waters.And God said, ' \
-    r'"Let there be light," and there was light. God saw that the light was good, and he separated the light from the' \
-    r' darkness. God called the light "day," and the darkness he called "night." And there was evening, and there' \
-    r' was morning - the first day.'
+LINE_SIZE_DEFAULT = 40
+TEXT_FILE_DEFAULT = 'sample.txt'
 
 
-def format_text(base_text, line_size=40):
+def justify_text(text, line_size=LINE_SIZE_DEFAULT):
+    pass
+
+
+def format_text(base_text, line_size=LINE_SIZE_DEFAULT):
     if base_text is None:
         return ''
 
@@ -27,7 +26,7 @@ def format_text(base_text, line_size=40):
             continue
         else:
             lines_sizes.append(len(current_line))
-            text_lines.append(current_line.strip())
+            text_lines.append(current_line.strip() + "\n")
             current_line = word
             current_size = len(word)
     else:
@@ -40,8 +39,17 @@ def format_text(base_text, line_size=40):
 
 
 def main():
-    format_text(text_sample)
+    input_file = open(TEXT_FILE_DEFAULT, "r")
+    output_file = open("output_"+TEXT_FILE_DEFAULT, "w")
+    text_sample = input_file.read()
 
+    new_text = format_text(text_sample)
+    # TODO justify_text(new_text)
+
+    output_file.writelines(new_text)
+
+    input_file.close()
+    output_file.close()
 
 if __name__ == '__main__':
     main()
