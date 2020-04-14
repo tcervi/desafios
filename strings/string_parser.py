@@ -5,11 +5,27 @@ LINE_SIZE_DEFAULT = 40
 TEXT_FILE_DEFAULT = 'sample.txt'
 
 
-def justify_text(text, line_size=LINE_SIZE_DEFAULT):
+def justify_lines(lines_list, line_size=LINE_SIZE_DEFAULT):
+    """Given a target line length and a list of stings, each one of length smaller or equal
+    to the target, return a list of strings with text justified and length exact the same as
+    the target one.
+
+    Keyword arguments:
+        lines_list -- the list of stings to be justified
+        line_size -- the target line length
+    """
     pass
 
 
 def format_text(base_text, line_size=LINE_SIZE_DEFAULT):
+    """Given a text and a maximum line length, return a list of strings
+    representing the original text divided in lines having the given line length
+
+    Keyword arguments:
+        base_text -- the original text
+        line_size -- the maximum line length
+    """
+
     if base_text is None:
         return ''
 
