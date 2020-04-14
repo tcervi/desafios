@@ -1,3 +1,6 @@
+import argparse
+
+
 LINE_SIZE_DEFAULT = 40
 TEXT_FILE_DEFAULT = 'sample.txt'
 
@@ -39,11 +42,18 @@ def format_text(base_text, line_size=LINE_SIZE_DEFAULT):
 
 
 def main():
-    input_file = open(TEXT_FILE_DEFAULT, "r")
-    output_file = open("output_"+TEXT_FILE_DEFAULT, "w")
+    parser = argparse.ArgumentParser(description='Simple Text Parser implementation in Python.'
+                                                 ' Formatted text will have a pre-defined line length')
+    parser.add_argument('--input_file', default=TEXT_FILE_DEFAULT, help='File location containing text to be formatted')
+    parser.add_argument('--output_file', default="output_"+TEXT_FILE_DEFAULT, help='File location to save result')
+    parser.add_argument('--line_len', default=40, type=int, help='Pre-defined line length value')
+    args = parser.parse_args()
+
+    input_file = open(args.input_file, "r")
+    output_file = open(args.output_file, "w")
     text_sample = input_file.read()
 
-    new_text = format_text(text_sample)
+    new_text = format_text(text_sample, args.line_len)
     # TODO justify_text(new_text)
 
     output_file.writelines(new_text)
