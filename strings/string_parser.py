@@ -35,7 +35,6 @@ def format_text(base_text, line_size=LINE_SIZE_DEFAULT):
     base_words = base_text.rsplit()
 
     text_lines = []
-    lines_sizes = []
     current_line = ''
     current_size = 0
     for word in base_words:
@@ -44,16 +43,12 @@ def format_text(base_text, line_size=LINE_SIZE_DEFAULT):
             current_line += ' ' + word
             continue
         else:
-            lines_sizes.append(len(current_line))
             text_lines.append(current_line.strip() + "\n")
             current_line = word
             current_size = len(word)
     else:
-        lines_sizes.append(len(current_line))
         text_lines.append(current_line.strip())
 
-    print(text_lines)
-    print(lines_sizes)
     return text_lines
 
 
