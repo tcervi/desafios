@@ -5,25 +5,34 @@ LINE_SIZE_DEFAULT = 40
 TEXT_FILE_DEFAULT = 'sample.txt'
 
 
+def left_justify(line, width):
+    """
+
+    :param line:
+    :param width:
+    :return:
+    """
+
+
 def justify_lines(lines_list, line_size=LINE_SIZE_DEFAULT):
-    """Given a target line length and a list of stings, each one of length smaller or equal
-    to the target, return a list of strings with text justified and length exact the same as
+    """Given a target line width and a list of stings, each one of width smaller or equal
+    to the target, return a list of strings with text justified and width exact the same as
     the target one.
 
-    Keyword arguments:
-        lines_list -- the list of stings to be justified
-        line_size -- the target line length
+    :param lines_list: the list of stings to be justified
+    :param line_size: the target line width
+    :return:
     """
     pass
 
 
 def format_text(base_text, line_size=LINE_SIZE_DEFAULT):
-    """Given a text and a maximum line length, return a list of strings
-    representing the original text divided in lines having the given line length
+    """Given a text and a maximum line width, return a list of strings
+    representing the original text divided in lines having the given line width
 
-    Keyword arguments:
-        base_text -- the original text
-        line_size -- the maximum line length
+    :param base_text: the original text
+    :param line_size: the maximum line width
+    :return: a list of strings of the given line width
     """
 
     if base_text is None:
