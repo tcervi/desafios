@@ -85,6 +85,13 @@ def extract_hot_threads(threads_raw, min_score=TRENDING_SCORE_DEFAULT):
 
 
 def handle_subreddit(subr_name, trending_score):
+    """Given a Subreddit name and a minimum trending score, execute the crawler process
+
+    :param subr_name:
+    :param trending_score:
+    :return:
+    """
+
     try:
         # html = urlopen(OLD_REDDIT_URL + "/r/" + subr_name)
         # res = BeautifulSoup(html.read(), "html5lib")
