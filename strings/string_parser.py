@@ -19,7 +19,8 @@ def left_justify(line, width):
     if width is None:
         raise ValueError("No line width was passed to lef-justify")
 
-    return ' '.join(line.rsplit()).ljust(width)
+    justified_line = ' '.join(line.rsplit()).ljust(width)
+    return justified_line + '\n'
 
 
 def justify_line(line, width):
@@ -176,7 +177,7 @@ def main():
     text_sample = input_file.readlines()
 
     new_text = format_text(text_sample, args.line_len)
-    new_text = justify_text(new_text)
+    new_text = justify_text(new_text, args.line_len)
 
     output_file.writelines(new_text)
 
