@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import re
+from tabulate import tabulate
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
 
@@ -18,8 +19,25 @@ class HotThreadResult:
         self.comments_url = c_url
         self.score = t_score
 
+    def get_printable(self):
+        return [self.subr_name, self.score, self.thread_title, self.thread_url, self.comments_url]
+
 
 OLD_REDDIT_URL = "https://old.reddit.com"
+
+
+def print_result_list(result_list):
+    """Given a list of HotThreadResult objects, print the information in a table format
+
+    :param result_list: the list of HotThreadResult objects
+    :return:
+    """
+
+    printable_results = []
+    for result in result_list:
+        printable_results.append(result.get_printable())
+
+    print(tabulate(printable_results, headers=["Subreddit", "Score", "Thread Title", "Thread URL", "Comments URL"]))
 
 
 def assemble_result_list(hot_threads_list):
@@ -58,7 +76,6 @@ def extract_hot_threads(threads_raw, min_score=5000):
         if score is None or int(score) < min_score:
             continue
         else:
-            print(thread["data-score"])
             hot_threads.append(thread)
     else:
         return hot_threads
@@ -78,6 +95,7 @@ def main():
 
         threads_hot = extract_hot_threads(threads_raw)
         result_list = assemble_result_list(threads_hot)
+        print_result_list(result_list)
 
     except HTTPError as error:
         print(error)
