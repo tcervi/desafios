@@ -36,6 +36,9 @@ def justify_line(line, width):
     if width is None:
         raise ValueError("No line width was passed to lef-justify")
 
+    if line == '\n':
+        return line
+
     missing_size = width - len(line)
     line_spaces = line.count(' ')
     new_line = line
@@ -91,6 +94,9 @@ def justify_text(lines_list, line_size=LINE_SIZE_DEFAULT):
 
     new_lines_list = []
     for line in lines_list:
+        # No need to justify blank lines
+        if line == '\n':
+            new_lines_list.append(line)
         # Left-justifying single word lines
         if len(line.rsplit()) == 1:
             new_lines_list.append(left_justify(line, line_size))
@@ -100,8 +106,36 @@ def justify_text(lines_list, line_size=LINE_SIZE_DEFAULT):
     return new_lines_list
 
 
+def break_text_in_width(text, width):
+    """Given a text part and a maximum line width, return a list of strings
+    representing the original text divided in lines having the given line width
+
+    :param text: the original text
+    :param width: the maximum line width
+    :return: a list of strings of the given line width
+    """
+
+    base_words = text.rsplit()
+    current_line = ''
+    current_size = 0
+    lines = []
+    for word in base_words:
+        current_size += (len(word) + 1)
+        if current_size < width:
+            current_line += ' ' + word
+            continue
+        else:
+            lines.append(current_line.strip() + "\n")
+            current_line = word
+            current_size = len(word)
+    else:
+        lines.append(current_line.strip())
+
+    return lines
+
+
 def format_text(base_text, line_size=LINE_SIZE_DEFAULT):
-    """Given a text and a maximum line width, return a list of strings
+    """Given a read text from file and a maximum line width, return a list of strings
     representing the original text divided in lines having the given line width
 
     :param base_text: the original text
@@ -112,25 +146,19 @@ def format_text(base_text, line_size=LINE_SIZE_DEFAULT):
     if base_text is None:
         return ''
 
-    if len(base_text) <= line_size:
-        return base_text
-
-    base_words = base_text.rsplit()
-
     text_lines = []
-    current_line = ''
-    current_size = 0
-    for word in base_words:
-        current_size += (len(word) + 1)
-        if current_size < line_size:
-            current_line += ' ' + word
-            continue
+
+    # Handling a single liner text
+    if len(base_text) == 1:
+        return break_text_in_width(base_text, line_size)
+
+    # The input file had more than one line, handling each one now
+    for line in base_text:
+        if line == '\n':
+            text_lines.append(line)
         else:
-            text_lines.append(current_line.strip() + "\n")
-            current_line = word
-            current_size = len(word)
-    else:
-        text_lines.append(current_line.strip())
+            for new_line in break_text_in_width(line, line_size):
+                text_lines.append(new_line)
 
     return text_lines
 
@@ -145,7 +173,7 @@ def main():
 
     input_file = open(args.input_file, "r")
     output_file = open(args.output_file, "w")
-    text_sample = input_file.read()
+    text_sample = input_file.readlines()
 
     new_text = format_text(text_sample, args.line_len)
     new_text = justify_text(new_text)
@@ -154,6 +182,7 @@ def main():
 
     input_file.close()
     output_file.close()
+
 
 if __name__ == '__main__':
     main()
