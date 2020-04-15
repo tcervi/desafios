@@ -40,6 +40,7 @@ def print_result_list(result_list):
         printable_results.append(result.get_printable())
 
     print(tabulate(printable_results, headers=["Subreddit", "Score", "Thread Title", "Thread URL", "Comments URL"]))
+    print('\n')
 
 
 def assemble_result_list(hot_threads_list):
@@ -81,6 +82,25 @@ def extract_hot_threads(threads_raw, min_score=TRENDING_SCORE_DEFAULT):
             hot_threads.append(thread)
     else:
         return hot_threads
+
+
+def handle_subreddit(subr_name, trending_score):
+    try:
+        # html = urlopen(OLD_REDDIT_URL + "/r/" + subr_name)
+        # res = BeautifulSoup(html.read(), "html5lib")
+        output_file = open(subr_name, "r")
+        res = BeautifulSoup(output_file.read(), "html5lib")
+        output_file.close()
+
+        threads_raw = res.findAll("div", {"id": re.compile("thing_t3_")})
+        threads_hot = extract_hot_threads(threads_raw, trending_score)
+        result_list = assemble_result_list(threads_hot)
+        print_result_list(result_list)
+
+    except HTTPError as error:
+        print(error)
+    except URLError as error:
+        print(error)
 
 
 def main():
