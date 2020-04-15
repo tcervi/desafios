@@ -94,11 +94,11 @@ def handle_subreddit(subr_name, trending_score):
     """
 
     try:
-        # html = urlopen(OLD_REDDIT_URL + "/r/" + subr_name)
-        # res = BeautifulSoup(html.read(), "html5lib")
-        output_file = open(subr_name, "r")
-        res = BeautifulSoup(output_file.read(), "html5lib")
-        output_file.close()
+        html = urlopen(OLD_REDDIT_URL_DEFAULT + "/r/" + subr_name)
+        res = BeautifulSoup(html.read(), "html5lib")
+        # output_file = open(subr_name, "r")
+        # res = BeautifulSoup(output_file.read(), "html5lib")
+        # output_file.close()
 
         threads_raw = res.findAll("div", {"id": re.compile("thing_t3_")})
         threads_hot = extract_hot_threads(threads_raw, trending_score)
