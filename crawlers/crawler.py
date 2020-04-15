@@ -26,7 +26,7 @@ class HotThreadResult:
         self.score = t_score
 
     def get_printable(self):
-        return [self.subr_name, self.score, self.thread_title, self.thread_url, self.comments_url]
+        return [self.subr_name, self.score, self.thread_title, self.comments_url]
 
 
 def print_result_list(result_list):
@@ -40,7 +40,7 @@ def print_result_list(result_list):
     for result in result_list:
         printable_results.append(result.get_printable())
 
-    print(tabulate(printable_results, headers=["Subreddit", "Score", "Thread Title", "Thread URL", "Comments URL"]))
+    print(tabulate(printable_results, headers=["Subreddit", "Score", "Thread Title", "Comments URL"]))
     print('\n')
 
 
