@@ -16,12 +16,12 @@ class LeftJustifyTestCase(unittest.TestCase):
     def test_left_justify_wrong_line(self):
         with self.assertRaises(ValueError) as context:
             left_justify(40, 40)
-        self.assertEquals("Wrong line value was passed to be left-justified", str(context.exception))
+        self.assertEqual("Wrong line value was passed to be left-justified", str(context.exception))
 
     def test_left_justify_no_width(self):
         with self.assertRaises(ValueError) as context:
             left_justify("the text line to be left-justified", None)
-        self.assertEquals("No line width was passed to lef-justify", str(context.exception))
+        self.assertEqual("No line width was passed to lef-justify", str(context.exception))
 
 
 class JustifyLineTestCase(unittest.TestCase):
