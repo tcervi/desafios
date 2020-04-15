@@ -43,22 +43,33 @@ def justify_line(line, width):
     if missing_size == 0:
         return line
 
+    # Based on the missing number of chars to complete the line width and the number of blank spaces in line
+    # it is possible to know how many times it will be needed to add a new space
     complete_iterations, remaining_spaces = divmod(missing_size, line_spaces)
     remaining_half, remaining_r = divmod(remaining_spaces, 2)
     target_char = ' '
+    # From missing_size/line_spaces division it is possible to know
+    # how many times all the spaces will have to increase by one
     for i in range(complete_iterations):
         new_line = new_line.replace(target_char, target_char + ' ')
         target_char = target_char + ' '
     else:
+        # If there was no remaining from missing_size/line_spaces division, the line is justified
         if remaining_spaces == 0:
             return new_line
 
+    # If there was a remaining value from missing_size/line_spaces division, this value will be divided by two
+    # so we can include a new extra space to the first and the last "outlier" spaces between strings on this line
+    # and for each iteration will come closer to the center of the string
+    # (a simplified way to ensure balance on extra spaces)
     for i in range(remaining_half):
         new_line = new_line.replace(target_char, target_char + ' ', 1)
         reversed_line = new_line[::-1]
         reversed_line = reversed_line.replace(target_char, target_char + ' ', 1)
         new_line = reversed_line[::-1]
     else:
+        # If, yet, we still have a remaining from remaining_spaces/2 division
+        # this extra space will be added to the last 'outlier' space between strings on the line
         if remaining_r is not 0:
             new_target_char = target_char + ' ' * remaining_half
             reversed_line = new_line[::-1]
