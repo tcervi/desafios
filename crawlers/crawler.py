@@ -83,16 +83,13 @@ def extract_hot_threads(threads_raw, min_score=5000):
 
 def main():
     try:
-        # html = urlopen(OLD_REDDIT_URL + "/r/" + "Art")
+        # html = urlopen(OLD_REDDIT_URL + "/r/" + "worldnews")
         # res = BeautifulSoup(html.read(), "html5lib")
         output_file = open("resSample.html", "r")
         res = BeautifulSoup(output_file.read(), "html5lib")
         output_file.close()
 
-        print(res.title)
         threads_raw = res.findAll("div", {"id": re.compile("thing_t3_")})
-        print(len(threads_raw))
-
         threads_hot = extract_hot_threads(threads_raw)
         result_list = assemble_result_list(threads_hot)
         print_result_list(result_list)
