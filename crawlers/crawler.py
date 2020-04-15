@@ -1,8 +1,13 @@
-from bs4 import BeautifulSoup
+import argparse
 import re
+from bs4 import BeautifulSoup
 from tabulate import tabulate
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
+
+
+OLD_REDDIT_URL_DEFAULT = "https://old.reddit.com"
+TRENDING_SCORE_DEFAULT = 5000
 
 
 class HotThreadResult:
@@ -21,9 +26,6 @@ class HotThreadResult:
 
     def get_printable(self):
         return [self.subr_name, self.score, self.thread_title, self.thread_url, self.comments_url]
-
-
-OLD_REDDIT_URL = "https://old.reddit.com"
 
 
 def print_result_list(result_list):
@@ -53,7 +55,7 @@ def assemble_result_list(hot_threads_list):
         t = BeautifulSoup(str(thread), "html5lib")
         name = t.div["data-subreddit"]
         title = t.find("a", {"class": re.compile("title")}).getText()
-        c_url = t_url = OLD_REDDIT_URL + t.div["data-permalink"]
+        c_url = t_url = OLD_REDDIT_URL_DEFAULT + t.div["data-permalink"]
         t_score = t.div["data-score"]
         result = HotThreadResult(name, title, t_url, c_url, t_score)
         result_list.append(result)
@@ -61,7 +63,7 @@ def assemble_result_list(hot_threads_list):
         return result_list
 
 
-def extract_hot_threads(threads_raw, min_score=5000):
+def extract_hot_threads(threads_raw, min_score=TRENDING_SCORE_DEFAULT):
     """Given a PageElements set, with any number of threads page elements, and a minimum score to consider one thread
     as a hot thread, returns a list containing only the hot threads from the original set
 
@@ -82,6 +84,12 @@ def extract_hot_threads(threads_raw, min_score=5000):
 
 
 def main():
+    parser = argparse.ArgumentParser(description='Simple Subreddits crawler implementation in Python.')
+    parser.add_argument('--subr_list', default="worldnews", help='List of Subreddits to search, separated by ; ')
+    parser.add_argument('--trending_score', default=5000, type=int, help='Minimum score for a thread to be trending')
+    args = parser.parse_args()
+
+
     try:
         # html = urlopen(OLD_REDDIT_URL + "/r/" + "worldnews")
         # res = BeautifulSoup(html.read(), "html5lib")
@@ -90,7 +98,7 @@ def main():
         output_file.close()
 
         threads_raw = res.findAll("div", {"id": re.compile("thing_t3_")})
-        threads_hot = extract_hot_threads(threads_raw)
+        threads_hot = extract_hot_threads(threads_raw, args.trending_score)
         result_list = assemble_result_list(threads_hot)
         print_result_list(result_list)
 
