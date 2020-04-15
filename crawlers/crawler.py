@@ -19,7 +19,28 @@ class HotThreadResult:
         self.score = t_score
 
 
-OLD_REDDIT_URL = "https://old.reddit.com/r/"
+OLD_REDDIT_URL = "https://old.reddit.com"
+
+
+def assemble_result_list(hot_threads_list):
+    """Given a list of hot threads, create a HotThreadResult instance for each thread
+    and returns a list of HotThreadResult objects
+
+    :param hot_threads_list:
+    :return: a list of HotThreadResult objects
+    """
+
+    result_list = []
+    for thread in hot_threads_list:
+        t = BeautifulSoup(str(thread))
+        name = t.div["data-subreddit"]
+        title = t.find("a", {"class": re.compile("title")}).getText()
+        c_url = t_url = OLD_REDDIT_URL + t.div["data-permalink"]
+        t_score = t.div["data-score"]
+        result = HotThreadResult(name, title, t_url, c_url, t_score)
+        result_list.append(result)
+    else:
+        return result_list
 
 
 def extract_hot_threads(threads_raw, min_score=5000):
@@ -45,7 +66,7 @@ def extract_hot_threads(threads_raw, min_score=5000):
 
 def main():
     try:
-        # html = urlopen(OLD_REDDIT_URL + "Art")
+        # html = urlopen(OLD_REDDIT_URL + "/r/" + "Art")
         # res = BeautifulSoup(html.read(), "html5lib")
         output_file = open("resSample.html", "r")
         res = BeautifulSoup(output_file.read(), "html5lib")
@@ -54,7 +75,9 @@ def main():
         print(res.title)
         threads_raw = res.findAll("div", {"id": re.compile("thing_t3_")})
         print(len(threads_raw))
+
         threads_hot = extract_hot_threads(threads_raw)
+        result_list = assemble_result_list(threads_hot)
 
     except HTTPError as error:
         print(error)
