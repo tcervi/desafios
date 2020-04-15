@@ -1,5 +1,5 @@
 import unittest
-from string_parser import left_justify
+from string_parser import left_justify, justify_line
 
 class LeftJustifyTestCase(unittest.TestCase):
 
@@ -24,3 +24,20 @@ class LeftJustifyTestCase(unittest.TestCase):
         self.assertEquals("No line width was passed to lef-justify", str(context.exception))
 
 
+class JustifyLineTestCase(unittest.TestCase):
+
+    def test_justify_small_line_even_spaces(self):
+        result = justify_line("the light was very good", 40)
+        self.assertTrue(len(result) == 40)
+
+    def test_justify_small_line_odd_spaces(self):
+        result = justify_line("the light was good", 40)
+        self.assertTrue(len(result) == 40)
+
+    def test_justify_big_line_even_spaces(self):
+        result = justify_line("Morbi massa leo, consequat euismod", 40)
+        self.assertTrue(len(result) == 40)
+
+    def test_justify_big_line_odd_spaces(self):
+        result = justify_line("Morbi massa leo, consequat nec euismod", 40)
+        self.assertTrue(len(result) == 40)
