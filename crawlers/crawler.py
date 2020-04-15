@@ -50,7 +50,7 @@ def assemble_result_list(hot_threads_list):
 
     result_list = []
     for thread in hot_threads_list:
-        t = BeautifulSoup(str(thread))
+        t = BeautifulSoup(str(thread), "html5lib")
         name = t.div["data-subreddit"]
         title = t.find("a", {"class": re.compile("title")}).getText()
         c_url = t_url = OLD_REDDIT_URL + t.div["data-permalink"]
