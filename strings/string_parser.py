@@ -6,24 +6,87 @@ TEXT_FILE_DEFAULT = 'sample.txt'
 
 
 def left_justify(line, width):
+    """Given a line of text and a target width, return that line left-justified
+    to the target width, padded with blank spaces.
+
+    :param line: the text line to be left-justified
+    :param width: the target line width
+    :return: a string representing the line left-justified
+    """
+    if line is None or not isinstance(line, str):
+        raise ValueError("Wrong line value was passed to be left-justified")
+
+    if width is None:
+        raise ValueError("No line width was passed to lef-justify")
+
+    return ' '.join(line.rsplit()).ljust(width)
+
+
+def justify_line(line, width):
+    """Given a line of text and a target width, return that line justified to the target width
+
+    :param line: the text line to be justified
+    :param width: the target line width
+    :return: a string representing the line justified
     """
 
-    :param line:
-    :param width:
-    :return:
-    """
+    if line is None or not isinstance(line, str):
+        raise ValueError("Wrong line value was passed to be left-justified")
+
+    if width is None:
+        raise ValueError("No line width was passed to lef-justify")
+
+    missing_size = width - len(line)
+    line_spaces = line.count(' ')
+    new_line = line
+
+    if missing_size == 0:
+        return line
+
+    complete_iterations, remaining_spaces = divmod(missing_size, line_spaces)
+    remaining_half, remaining_r = divmod(remaining_spaces, 2)
+    target_char = ' '
+    for i in range(complete_iterations):
+        new_line = new_line.replace(target_char, target_char + ' ')
+        target_char = target_char + ' '
+    else:
+        if remaining_spaces == 0:
+            return new_line
+
+    for i in range(remaining_half):
+        new_line = new_line.replace(target_char, target_char + ' ', 1)
+        reversed_line = new_line[::-1]
+        reversed_line = reversed_line.replace(target_char, target_char + ' ', 1)
+        new_line = reversed_line[::-1]
+    else:
+        if remaining_r is not 0:
+            new_target_char = target_char + ' ' * remaining_half
+            reversed_line = new_line[::-1]
+            reversed_line = reversed_line.replace(new_target_char, new_target_char + ' ', 1)
+            new_line = reversed_line[::-1]
+
+    return new_line
 
 
-def justify_lines(lines_list, line_size=LINE_SIZE_DEFAULT):
+def justify_text(lines_list, line_size=LINE_SIZE_DEFAULT):
     """Given a target line width and a list of stings, each one of width smaller or equal
     to the target, return a list of strings with text justified and width exact the same as
     the target one.
 
     :param lines_list: the list of stings to be justified
     :param line_size: the target line width
-    :return:
+    :return: the given list of strings justified to line width
     """
-    pass
+
+    new_lines_list = []
+    for line in lines_list:
+        # Left-justifying single word lines
+        if len(line.rsplit()) == 1:
+            new_lines_list.append(left_justify(line, line_size))
+        else:
+            new_lines_list.append(justify_line(line, line_size))
+
+    return new_lines_list
 
 
 def format_text(base_text, line_size=LINE_SIZE_DEFAULT):
@@ -74,7 +137,7 @@ def main():
     text_sample = input_file.read()
 
     new_text = format_text(text_sample, args.line_len)
-    # TODO justify_text(new_text)
+    new_text = justify_text(new_text)
 
     output_file.writelines(new_text)
 
