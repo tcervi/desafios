@@ -1,6 +1,7 @@
 import argparse
 import re
 from bs4 import BeautifulSoup
+from multiprocessing import Process
 from tabulate import tabulate
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
@@ -116,23 +117,11 @@ def main():
     parser.add_argument('--trending_score', default=5000, type=int, help='Minimum score for a thread to be trending')
     args = parser.parse_args()
 
-
-    try:
-        # html = urlopen(OLD_REDDIT_URL + "/r/" + "worldnews")
-        # res = BeautifulSoup(html.read(), "html5lib")
-        output_file = open("resSample.html", "r")
-        res = BeautifulSoup(output_file.read(), "html5lib")
-        output_file.close()
-
-        threads_raw = res.findAll("div", {"id": re.compile("thing_t3_")})
-        threads_hot = extract_hot_threads(threads_raw, args.trending_score)
-        result_list = assemble_result_list(threads_hot)
-        print_result_list(result_list)
-
-    except HTTPError as error:
-        print(error)
-    except URLError as error:
-        print(error)
+    subr_list = args.subr_list.rsplit(";")
+    for subr in subr_list:
+        process = Process(target=handle_subreddit, args=(subr,args.trending_score,))
+        process.start()
+        process.join()
 
 
 if __name__ == '__main__':
