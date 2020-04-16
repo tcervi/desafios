@@ -33,8 +33,8 @@ class HotThreadResult:
 
     def get_textable(self):
         textable_str = ""
-        textable_str += "SubReddit   : " + self.subr_name + '\n'
-        textable_str += "Score       : " + self.score + '\n'
+        textable_str += "SubReddit: " + self.subr_name + '\n'
+        textable_str += "Score: " + self.score + '\n'
         textable_str += "Thread Title: " + self.thread_title + '\n'
         textable_str += "Comments URL: " + self.comments_url + '\n'
         textable_str += '\n'
