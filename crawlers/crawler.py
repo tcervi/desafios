@@ -31,6 +31,15 @@ class HotThreadResult:
     def get_printable(self):
         return [self.subr_name, self.score, self.thread_title, self.comments_url]
 
+    def get_textable(self):
+        textable_str = ""
+        textable_str += "SubReddit   : " + self.subr_name + '\n'
+        textable_str += "Score       : " + self.score + '\n'
+        textable_str += "Thread Title: " + self.thread_title + '\n'
+        textable_str += "Comments URL: " + self.comments_url + '\n'
+        textable_str += '\n'
+        return textable_str
+
 
 def print_result_list(result_list, return_list):
     """Given a list of HotThreadResult objects and a shared list in which the results will be written
@@ -42,11 +51,16 @@ def print_result_list(result_list, return_list):
     """
 
     printable_results = []
+    textable_response = ""
     for result in result_list:
         printable_results.append(result.get_printable())
+        textable_response += result.get_textable()
+    else:
+        textable_response += "\n\n\n"
 
-    response = tabulate(printable_results, headers=["Subreddit", "Score", "Thread Title", "Comments URL"]) + '\n'
-    return_list.append(response)
+    print(tabulate(printable_results, headers=["Subreddit", "Score", "Thread Title", "Comments URL"]))
+    print('\n')
+    return_list.append(textable_response)
 
 
 def assemble_result_list(hot_threads_list):
