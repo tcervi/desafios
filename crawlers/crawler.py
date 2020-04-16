@@ -2,6 +2,7 @@ import os
 import multiprocessing
 import re
 import telebot
+import time
 from bs4 import BeautifulSoup
 from multiprocessing import Process
 from tabulate import tabulate
@@ -147,6 +148,7 @@ def main():
             process = Process(target=handle_subreddit, args=(subr.strip(), TRENDING_SCORE_DEFAULT, return_list))
             process.start()
             process.join()
+            time.sleep(10)
 
         return_string = ''
         for string in return_list:
