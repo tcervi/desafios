@@ -4,7 +4,6 @@ from tabulate import tabulate
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
 
-
 OLD_REDDIT_URL_DEFAULT = "https://old.reddit.com"
 TRENDING_SCORE_DEFAULT = 5000
 

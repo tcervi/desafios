@@ -5,7 +5,6 @@ import time
 from multiprocessing import Process
 from crawler import handle_subreddit, TRENDING_SCORE_DEFAULT
 
-
 TELEGRAM_BOT_TOKEN = "BORED_REDDIT_BOT_TOKEN"
 
 
@@ -39,7 +38,6 @@ def spawn_crawlers(subr_list, return_list):
 
 
 def main():
-
     bot = telebot.TeleBot(os.environ[TELEGRAM_BOT_TOKEN])
 
     @bot.message_handler(commands=['start', 'help'])
