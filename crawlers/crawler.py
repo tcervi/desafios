@@ -1,5 +1,7 @@
-import argparse
+import os
+import multiprocessing
 import re
+import telebot
 from bs4 import BeautifulSoup
 from multiprocessing import Process
 from tabulate import tabulate
@@ -9,6 +11,7 @@ from urllib.request import urlopen
 
 OLD_REDDIT_URL_DEFAULT = "https://old.reddit.com"
 TRENDING_SCORE_DEFAULT = 5000
+TELEGRAM_BOT_TOKEN = "BORED_REDDIT_BOT_TOKEN"
 
 
 class HotThreadResult:
@@ -29,10 +32,12 @@ class HotThreadResult:
         return [self.subr_name, self.score, self.thread_title, self.comments_url]
 
 
-def print_result_list(result_list):
-    """Given a list of HotThreadResult objects, print the information in a table format
+def print_result_list(result_list, return_list):
+    """Given a list of HotThreadResult objects and a shared list in which the results will be written
+    append results information to shared list (in a table format)
 
     :param result_list: the list of HotThreadResult objects
+    :param return_list: the shared list in which the results will be written
     :return:
     """
 
@@ -40,8 +45,8 @@ def print_result_list(result_list):
     for result in result_list:
         printable_results.append(result.get_printable())
 
-    print(tabulate(printable_results, headers=["Subreddit", "Score", "Thread Title", "Comments URL"]))
-    print('\n')
+    response = tabulate(printable_results, headers=["Subreddit", "Score", "Thread Title", "Comments URL"]) + '\n'
+    return_list.append(response)
 
 
 def assemble_result_list(hot_threads_list):
@@ -85,25 +90,24 @@ def extract_hot_threads(threads_raw, min_score=TRENDING_SCORE_DEFAULT):
         return hot_threads
 
 
-def handle_subreddit(subr_name, trending_score):
-    """Given a Subreddit name and a minimum trending score, execute the crawler process
+def handle_subreddit(subr_name, trending_score, return_list):
+    """Given a Subreddit name, a minimum trending score and a shared list in which the results will be written
+    execute the crawler process
 
     :param subr_name:
     :param trending_score:
+    :param return_list: the shared list in which the results will be written
     :return:
     """
 
     try:
         html = urlopen(OLD_REDDIT_URL_DEFAULT + "/r/" + subr_name)
         res = BeautifulSoup(html.read(), "html5lib")
-        # output_file = open(subr_name, "r")
-        # res = BeautifulSoup(output_file.read(), "html5lib")
-        # output_file.close()
 
         threads_raw = res.findAll("div", {"id": re.compile("thing_t3_")})
         threads_hot = extract_hot_threads(threads_raw, trending_score)
         result_list = assemble_result_list(threads_hot)
-        print_result_list(result_list)
+        print_result_list(result_list, return_list)
 
     except HTTPError as error:
         print(error)
@@ -112,16 +116,31 @@ def handle_subreddit(subr_name, trending_score):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Simple Subreddits crawler implementation in Python.')
-    parser.add_argument('--subr_list', default="worldnews", help='List of Subreddits to search, separated by ; ')
-    parser.add_argument('--trending_score', default=5000, type=int, help='Minimum score for a thread to be trending')
-    args = parser.parse_args()
 
-    subr_list = args.subr_list.rsplit(";")
-    for subr in subr_list:
-        process = Process(target=handle_subreddit, args=(subr,args.trending_score,))
-        process.start()
-        process.join()
+    bot = telebot.TeleBot(os.environ[TELEGRAM_BOT_TOKEN])
+
+    @bot.message_handler(commands=['start', 'help'])
+    def send_welcome(message):
+        bot.reply_to(message, "Wanna some info about SubReddit threads??")
+
+    @bot.message_handler(commands=['NadaPraFazer'])
+    def fetch_subreddits(message):
+        params_str = message.text.replace('/NadaPraFazer', '')
+        manager = multiprocessing.Manager()
+        subr_list = params_str.rsplit(";")
+        return_list = manager.list()
+        for subr in subr_list:
+            process = Process(target=handle_subreddit, args=(subr.strip(), TRENDING_SCORE_DEFAULT, return_list))
+            process.start()
+            process.join()
+
+        return_string = ''
+        for string in return_list:
+            return_string = return_string + string
+        else:
+            bot.reply_to(message, return_string)
+
+    bot.polling()
 
 
 if __name__ == '__main__':
