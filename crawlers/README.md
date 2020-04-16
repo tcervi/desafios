@@ -29,3 +29,22 @@ Construir um robô que nos envie essa lista via Telegram sempre que receber o co
 ### Dicas
  - Use https://old.reddit.com/
  - Qualquer método para coletar os dados é válido. Caso não saiba por onde começar, procure por JSoup (Java), SeleniumHQ (Java), PhantomJS (Javascript) e Beautiful Soup (Python).
+
+
+# Solução Proposta
+A solução final proposta para esse desafio foi robo de Telegram escrito em Python capaz de responder determinados comandos.
+
+Entre os comandos possiveis, um recebe como parametros as SubReddits alvo de onde dados serao coletados e enviados por mensagem.
+
+## Solução em Partes
+Na resolucao da primeira parte foi desenvolvido o modulo crawler que fornece funcoes para coletar dados das paginas web do Reddit.
+
+Para validar a Parte 1 foi utilizado argparse para receber as SubReddits de entrada (separadas por ";") e imprimir na stdout uma tabela com as threads quentes do momento.
+
+Com o modulo crawler pronto e validado, o robo (telegram_bot.py) foi desenvolvido utilizando a biblioteca telebot que facilita a comunicacao com a API dos bots do Telegram e, inclusive, providencia anotacoes para deixar o codigo mais simples e legivel.
+Mais informacoes sobre a biblioteca e o otimo projeto, no site: https://pypi.org/project/pyTelegramBotAPI/
+
+O bot foi gerado no Telegram seguindo a documentacao do aplicativo (https://core.telegram.org/bots) e a API token gerada salva em uma variavel de ambiente para ser usada pelo robo.
+
+## Documentação
+Todas as funcoes do codigo incluem docstring com explicacoes em ingles dos parametros esperados e do resultado retornado.
