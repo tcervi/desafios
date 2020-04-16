@@ -1,10 +1,5 @@
-import os
-import multiprocessing
 import re
-import telebot
-import time
 from bs4 import BeautifulSoup
-from multiprocessing import Process
 from tabulate import tabulate
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
@@ -12,7 +7,6 @@ from urllib.request import urlopen
 
 OLD_REDDIT_URL_DEFAULT = "https://old.reddit.com"
 TRENDING_SCORE_DEFAULT = 5000
-TELEGRAM_BOT_TOKEN = "BORED_REDDIT_BOT_TOKEN"
 
 
 class HotThreadResult:
@@ -128,39 +122,3 @@ def handle_subreddit(subr_name, trending_score, return_list):
         print(error)
     except URLError as error:
         print(error)
-
-
-def main():
-
-    bot = telebot.TeleBot(os.environ[TELEGRAM_BOT_TOKEN])
-
-    @bot.message_handler(commands=['start', 'help'])
-    def send_welcome(message):
-        bot.reply_to(message, "Wanna some info about SubReddit threads??")
-
-    @bot.message_handler(commands=['NadaPraFazer'])
-    def fetch_subreddits(message):
-        params_str = message.text.replace('/NadaPraFazer', '')
-        manager = multiprocessing.Manager()
-        subr_list = params_str.rsplit(";")
-        return_list = manager.list()
-        for subr in subr_list:
-            process = Process(target=handle_subreddit, args=(subr.strip(), TRENDING_SCORE_DEFAULT, return_list))
-            process.start()
-            process.join()
-            time.sleep(10)
-
-        return_string = ''
-        for string in return_list:
-            return_string = return_string + string
-
-        if return_string is not '':
-            bot.reply_to(message, return_string)
-        else:
-            bot.reply_to(message, "Sorry! Can't access Reddit now :(")
-
-    bot.polling()
-
-
-if __name__ == '__main__':
-    main()
