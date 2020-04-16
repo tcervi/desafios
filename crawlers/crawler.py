@@ -137,8 +137,11 @@ def main():
         return_string = ''
         for string in return_list:
             return_string = return_string + string
-        else:
+
+        if return_string is not '':
             bot.reply_to(message, return_string)
+        else:
+            bot.reply_to(message, "Sorry! Can't access Reddit now :(")
 
     bot.polling()
 
