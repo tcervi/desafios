@@ -10,10 +10,11 @@ TELEGRAM_BOT_TOKEN = "BORED_REDDIT_BOT_TOKEN"
 
 
 def assemble_telegram_response(return_list):
-    """
+    """Given a list of lines (strings) to be assembled as a telegram message response,
+    return a single string for that response
 
-    :param return_list:
-    :return:
+    :param return_list: the list of lines (strings) to be assembled as telegram message response
+    :return: a single string for that response
     """
     return_string = ''
     for string in return_list:
@@ -23,10 +24,11 @@ def assemble_telegram_response(return_list):
 
 
 def spawn_crawlers(subr_list, return_list):
-    """
+    """Given a list of SubReddit names and a Manager list object, spawn a crawler for each SubReddit to collect
+    trending threads information and store results into the Manager list object
 
-    :param subr_list:
-    :param return_list:
+    :param subr_list: the list of SubReddit names
+    :param return_list: the Manager list object
     :return:
     """
     for subr in subr_list:
